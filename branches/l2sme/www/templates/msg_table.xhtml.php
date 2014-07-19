@@ -97,7 +97,7 @@
 		<input type="text" value="" name="music" id="msg_music" style="width: 97%" />
 		<div class="float">
 			<div class="left">Или выберите из списка:</div>
-			<div class="right"><input type="text" value="" name="music_search" id="msg_music_search" size="50" placeholder="Поиск..." class="right" /></div>
+			<div class="right"><input type="text" value="" name="music_search" id="msg_music_search" size="14" placeholder="Поиск..." class="right" /></div>
 		</div>
 		
 		<div style="height: 150px; overflow-y: scroll" id="music_list">
