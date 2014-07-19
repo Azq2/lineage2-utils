@@ -123,11 +123,7 @@ textarea:focus, input[type="text"]:focus, button.btn:focus, select:focus {
 input[type="submit"]:hover, select:hover, button.btn:hover {
 	background-color: #312d28;
 }
-
-
 #color_selector {
-	width: 356px;
-	height: 0;
 	overflow: hidden;
 	position: absolute;
 	z-index: 9999999
