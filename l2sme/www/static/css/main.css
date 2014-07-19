@@ -2,9 +2,14 @@
 body {
 	background-color: #110d08;
 	color: #756959;
-	font-size: 12pt;
+	font-size: 16px;
 	font-family: Tahoma;
 	padding: 10px;
+}
+
+textarea, input[type="text"] {
+	padding: 2px;
+	font-size: 15px
 }
 
 tr {
