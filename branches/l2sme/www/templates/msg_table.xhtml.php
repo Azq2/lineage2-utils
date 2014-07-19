@@ -39,9 +39,9 @@
 		
 		<small style="color: red; display: none" id="sysmsg_edit_error"></small>
 		
-		Сообщение:<br />
+		Сообщение (в чате):<br />
 		<textarea class="max_width" name="msg" id="message"></textarea><br />
-		Доп. сообщение:<br />
+		Сообщение (на экране):<br />
 		<textarea class="max_width" name="submsg" id="sub_message"></textarea><br />
 		<div class="hr"></div>
 		Положение на экране:<br />
@@ -95,13 +95,16 @@
 		
 		Звук при сообщении:<br />
 		<input type="text" value="" name="music" id="msg_music" style="width: 97%" />
-		Или выберите из списка:
+		<div class="float">
+			<div class="left">Или выберите из списка:</div>
+			<div class="right"><input type="text" value="" name="music_search" id="msg_music_search" size="50" placeholder="Поиск..." class="right" /></div>
+		</div>
 		
-		<div style="height: 150px; overflow-y: scroll">
+		<div style="height: 150px; overflow-y: scroll" id="music_list">
 		<?php foreach ($sounds as $sound): ?>
-			<div class="music" sound-name="<?= htmlspecialchars($sound) ?>">
+			<div class="music">
 				<img src="static/images/play.png" alt="" play="<?= htmlspecialchars(get_music_path($sound)) ?>" />
-				<?= htmlspecialchars(normalize_music_name($sound)) ?>
+				<span sound-name="<?= htmlspecialchars($sound) ?>"><?= htmlspecialchars(normalize_music_name($sound)) ?></span>
 			</div>
 		<?php endforeach; ?>
 		</div>
@@ -242,8 +245,17 @@ Slider.init($('#message_timeout_slider'), {
 		update_message_timeout(value);
 	}
 });
-
-$('.music').click(function () {
+$('#msg_music_search').keyup(function () {
+	var list = $('#music_list');
+	var search = this.value.toLowerCase();
+	if (search.length == 0) return false; console.log(search.length, search);
+	list.find('span[sound-name]').each(function(k, v) {
+		if (v.textContent.toLowerCase().indexOf(search) > -1)
+			list.prepend($(v).parent().detach());
+	});
+	list.animate({scrollTop: 0}, 500);
+});
+$('#music_list span[sound-name]').click(function () {
 	$('#msg_music').val(this.getAttribute('sound-name'));
 });
 var players = [];
@@ -341,7 +353,7 @@ function set_message_timeout(val) {
 }
 function update_opacity(val) {
 	$('#color_block').css('opacity', val / 255);
-	$('#message, #sub_message').css('opacity', val / 255);
+	$('#message').css('opacity', val / 255);
 	$('#transparent_value').val(val);
 }
 function update_message_timeout(val) {
