@@ -14,7 +14,7 @@
 			Для начала редактирования выгрузите файл <b>systemmsg-ru.dat</b> или <b>SystemMsg-e.dat</b><br />
 			Поддерживается только 413 версия протокола. 
 			<div class="hr"></div>
-			Файл <b>systemmsg-ru.dat</b> или <b>SystemMsg-e.dat</b> (до 400 kb):<br />
+			Файл <b>systemmsg-ru.dat</b> или <b>SystemMsg-e.dat</b> (до 1 Mb):<br />
 			<input type="file" name="file" /><br />
 			<?php if ($errors): ?>
 			<small style="color: red"><?= implode("<br />", $errors) ?></small>

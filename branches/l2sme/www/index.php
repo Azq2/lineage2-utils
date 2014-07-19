@@ -1,5 +1,5 @@
 <?php
-	error_reporting(0);
+	//error_reporting(0);
 	mb_internal_encoding('UTF-8');
 	
 	include 'rsa.php';
@@ -9,7 +9,9 @@
 	switch ($action) {
 		case "download":
 			$file_md5 = isset($_GET['file_id']) ? preg_replace("/[^a-f0-9]/", "", $_GET['file_id']) : '';
-			$file_name = isset($_GET['file_name']) ? $_GET['file_name'] : '';
+			$file_name = isset($_GET['file_name']) ? trim(preg_replace("/[\r\n\\x00]\"/", "", $_GET['file_name'])) : '';
+			if (!strlen($file_name))
+				$file_name = 'systemmsg-ru.dat';
 			
 			$file_path = "tmp/".$file_md5;
 			if (!file_exists($file_path) || !is_file($file_path)) {
@@ -17,17 +19,20 @@
 				exit;
 			}
 			
-			$size = filesize($file_path);
-			
-			$fp = fopen($file_path, "r");
-			flock($fp, LOCK_EX);
-			$blob = fread($fp, $size);
-			flock($fp, LOCK_UN);
-			fclose($fp);
-			
+			if (isset($_GET['raw'])) {
+				$blob = open_l2_file($file_path)->getData();
+				$size = strlen($blob);
+			} else {
+				$size = filesize($file_path);
+				$fp = fopen($file_path, "r");
+				flock($fp, LOCK_EX);
+				$blob = fread($fp, $size);
+				flock($fp, LOCK_UN);
+				fclose($fp);
+			}
 			header("Content-Type: application/octet-stream");
 			header("Content-Length: ".$size);
-			header('Content-Disposition: attachment; filename="'.urlencode($file_name).'"; size='.$size);
+			header('Content-Disposition: attachment; filename="'.$file_name.'"; size='.$size);
 			echo $blob;
 			exit;
 		break;
@@ -60,7 +65,7 @@
 				$file_path = "tmp/".$file_md5;
 				try {
 					if (!file_exists($file_path) || !is_file($file_path))
-						throw new Exception("File not found!");
+						throw new Exception("Файл не найден! Истекло время его хранения. Откройте его заново. ");
 					
 					$bb = open_l2_file($file_path);
 					L2SystemMsg::parse($bb, $systemmsgs);
@@ -139,15 +144,17 @@
 			if (isset($_FILES['file'])) {
 				if ($_FILES['file']['error'] > 0)
 					$errors[] = 'Ошибка загрузки файла #'.$_FILES['file']['error'];
-				elseif ($_FILES['file']['size'] >= 400 * 1024)
-					$errors[] = 'Максимальный размер файла - 400 кб. ';
+				elseif ($_FILES['file']['size'] >= 1024 * 1024)
+					$errors[] = 'Максимальный размер файла - 1 Mb. ';
 				else {
 					$r = open_l2_file($_FILES['file']['tmp_name']);
 					try {
 						L2SystemMsg::parse($r, $systemmsgs);
 						$md5 = md5(md5_file($_FILES['file']['tmp_name']).":".uniqid().":".time());
 						$file_name = "tmp/".$md5;
-						move_uploaded_file($_FILES['file']['tmp_name'], $file_name);
+						write_l2_file($file_name, $r->getData());
+						
+					//	move_uploaded_file($_FILES['file']['tmp_name'], $file_name);
 						
 						$file_name = basename($_FILES['file']['name']);
 						header("Location: ?action=edit_file&file_id=".$md5."&file_name=".urlencode($file_name));
