@@ -1,5 +1,7 @@
 <?php
-	//error_reporting(0);
+	const STATIC_REVISOIN = 1;
+	
+	error_reporting(0);
 	mb_internal_encoding('UTF-8');
 	
 	include 'rsa.php';
@@ -305,9 +307,11 @@
 	
 	function start_html_page($title) {
 		ob_start();
+		
 		header("Content-Type: text/html; charset=UTF-8");
 		echo tpl("header.xhtml", array(
 			"title" => $title, 
+			"rev" => STATIC_REVISOIN
 		));
 	}
 	
