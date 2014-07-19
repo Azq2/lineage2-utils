@@ -234,7 +234,7 @@ Slider.init($('#transparent'), {
 	}
 });
 Slider.init($('#message_timeout_slider'), {
-	max: 300, 
+	max: 60, 
 	min: 0, 
 	onmove: function (value) {
 		update_message_timeout(value);
