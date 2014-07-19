@@ -25,6 +25,7 @@ body {
 
 textarea, input[type="text"] {
 	padding: 2px;
+	margin: 1px;
 	font-size: 15px
 }
 
