@@ -3,7 +3,8 @@
 
 <div id="menu">
 	<a href="?"><button class="btn">Новый</button></a>
-	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn">Скачать <?= htmlspecialchars($file_name) ?></button></a>
+	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn">Скачать</button></a>
+	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>&amp;raw=1"><button class="btn">Скачать (незашифрованный)</button></a>
 	
 	&nbsp;&nbsp;&nbsp;
 	ID: <input id="search_id" value="" type="text" size="6" /><input value="&gt;" type="submit" id="do_search_id" />
