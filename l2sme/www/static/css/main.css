@@ -126,7 +126,8 @@ input[type="submit"]:hover, select:hover, button.btn:hover {
 #color_selector {
 	overflow: hidden;
 	position: absolute;
-	z-index: 9999999
+	z-index: 9999999;
+	height: 0
 }
 #color_block {
 	cursor: pointer

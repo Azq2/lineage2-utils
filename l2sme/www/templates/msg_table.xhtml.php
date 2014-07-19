@@ -161,6 +161,7 @@ $('#save_lang').click(function(e) {
 $(".l2sysmsgs tr[S]").click(function(e) {
 	e.preventDefault();
 	
+	$('#color_selector').css("height", 0);
 	$('#sysmsg_edit_error').hide();
 	$('#message_id').val(parseInt($(this).find("td").text()));
 	
@@ -214,12 +215,9 @@ $('.modal_window_close').click(function() {
 	$('#' + this.getAttribute('w')).toggle();
 });
 
-var widt = false;
 $('#color_block').bind('click', function() {
-	if (!widt)
-		$('#color_selector').ColorPickerSetColor($(this).text());
-	$('#color_selector').stop().animate({height: widt ? 0 : 230}, 500);
-	widt = !widt;
+	var color_selector = $('#color_selector');
+	color_selector.stop().animate({height: color_selector.height() != 0 ? 0 : 230}, 500);
 });
 $('#transparent_value').keyup(function () {
 	if (this.value > 255)
@@ -342,6 +340,7 @@ soundManager.setup({
 function set_color(hex) {
 	$('#color_block').css('color', '#' + hex).html('#' + hex.toUpperCase());
 	$('#message, #sub_message').css('color', '#' + hex);
+	$('#color_selector').ColorPickerSetColor(hex);
 }
 function set_opacity(val) {
 	$('#transparent')[0].sliderSetValue(val);
