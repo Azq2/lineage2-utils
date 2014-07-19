@@ -60,6 +60,11 @@ var Slider = {
 		Slider.updateValue(slider, (100 * x / slider.self.width()));
 	}, 
 	updateValue: function(slider, p) {
+		if (slider.value < slider.min)
+			slider.value = slider.min;
+		if (slider.value > slider.max)
+			slider.value = slider.max;
+		
 		if (p !== null && p !== undefined)
 			slider.value = slider.min + Math.ceil((slider.max - slider.min) / 100 * p);
 		else
