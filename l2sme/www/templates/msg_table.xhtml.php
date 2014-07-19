@@ -43,10 +43,10 @@
 		<textarea class="max_width" name="submsg" id="sub_message"></textarea><br />
 		<div class="hr"></div>
 		Положение на экране:<br />
-		<table>
+		<table width="100%">
 			<tr>
-				<td width="50%">
-					<table class="screen_position">
+				<td width="40%">
+					<table class="screen_position" width="100%">
 						<tr>
 							<td p="1">1</td>
 							<td p="2">2</td>
@@ -64,7 +64,7 @@
 						</tr>
 					</table>
 				</td>
-				<td width="50%">
+				<td>
 					<div>
 						Цвет текста: <span id="color_block"></span><br />
 						<div id="color_selector"></div>
@@ -221,8 +221,10 @@ $('#transparent_value').keyup(function () {
 		this.value = 255;
 	if (this.value < 0)
 		this.value = 0;
-	
-	update_opacity(this.value);
+	set_opacity(this.value);
+});
+$('#message_timeout').keyup(function () {
+	set_message_timeout(this.value);
 });
 Slider.init($('#transparent'), {
 	max: 255, 
@@ -232,7 +234,7 @@ Slider.init($('#transparent'), {
 	}
 });
 Slider.init($('#message_timeout_slider'), {
-	max: 60, 
+	max: 300, 
 	min: 0, 
 	onmove: function (value) {
 		update_message_timeout(value);
@@ -359,13 +361,11 @@ function do_search(value) {
 	
 	var search = value.toLowerCase();
 	$('tr[N]').each(function(k, v) {
-		var $e = $(v);
-		if ($e.find('td[m]').text().toLowerCase().indexOf(search) > -1) {
-			$e.show();
-		} else if ($e.find('td[s]').text().toLowerCase().indexOf(search) > -1) {
-			$e.show();
+		var e = v.getElementsByTagName('td');
+		if ((e[1].textContent + e[2].textContent).toLowerCase().indexOf(search) > -1) {
+			v.style.display = "";
 		} else
-			$e.hide();
+			v.style.display = "none";
 	});
-};
+}
 </script>

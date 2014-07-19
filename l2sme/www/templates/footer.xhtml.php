@@ -2,10 +2,6 @@
 		<center><a href="http://zhumarin.ru/index.html"><?= date("Y") ?> &copy; Kirill Zhumarin</a></center>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
-var yaParams = <?= json_encode() ?>;
-</script>
-
-<script type="text/javascript">
 (function (d, w, c) {
     (w[c] = w[c] || []).push(function() {
         try {
