@@ -1,8 +1,10 @@
+* { font: inherit }
 body {
 	background-color: #110d08;
 	color: #756959;
-	font-size: normal;
+	font-size: 12pt;
 	font-family: Tahoma;
+	padding: 10px;
 }
 
 tr {
@@ -39,7 +41,7 @@ a:visited {
 	border: 1px solid #756959
 }
 .l2sysmsgs td, .l2sysmsgs th, .screen_position td {
-	padding: 2px;
+	padding: 3px;
 	white-space: pre-line;
 }
 .l2sysmsgs th {
@@ -74,7 +76,7 @@ a:visited {
 	pointer-events: auto
 }
 .modal_window > div {
-	width: 600px;
+	max-width: 700px;
 	max-height: 700px;
 	min-height: 500px;
 	position: relative;
