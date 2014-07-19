@@ -7,6 +7,22 @@ body {
 	padding: 10px;
 }
 
+.float {
+    display: table;
+    width: 100%
+}
+.float .left {
+    display: table-cell;
+    text-align: left;
+}
+.float .right {
+    display: table-cell;
+    text-align: right
+}
+.float .right > * {
+	text-align: left;
+}
+
 textarea, input[type="text"] {
 	padding: 2px;
 	font-size: 15px
