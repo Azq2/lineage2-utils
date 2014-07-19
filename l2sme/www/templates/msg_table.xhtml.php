@@ -7,9 +7,11 @@
 	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>&amp;raw=1"><button class="btn">Скачать (незашифрованный)</button></a>
 	
 	&nbsp;&nbsp;&nbsp;
-	ID: <input id="search_id" value="" type="text" size="6" /><input value="&gt;" type="submit" id="do_search_id" />
+	ID: <input id="search_id" value="" type="text" size="6" />
+	<input value="&gt;" type="submit" id="do_search_id" />
 	&nbsp;&nbsp;&nbsp;
-	<input id="search" value="" type="text" size="50" /><input value="Поиск" type="submit" id="do_search_text" />
+	<input id="search" value="" type="text" size="50" />
+	<input value="Поиск" type="submit" id="do_search_text" />
 </div>
 
 <table class="l2sysmsgs">
