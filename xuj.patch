@@ -1,0 +1,84 @@
+azq2@zhumarin:~/svn/f.spaces.ru/spaces/branches/zhumarin/xujxujxuj$ svn diff | colordiff
+Index: xuj.pl
+===================================================================
+--- xuj.pl	(revision 112079)
++++ xuj.pl	(working copy)
+@@ -1,43 +1,44 @@
+     if (!$contact_model->Get("user2_id")) {
+-        # Вырежем незакрытые тэги
+-        Spaces::Text::DeleteSingleTags(\$original_msg_text);
++        if (time <= 1410524714) { # день запуска оптимизатора HTML
++			# Вырежем незакрытые тэги
++			Spaces::Text::DeleteSingleTags(\$original_msg_text);
+ 
+-        $original_msg_text =~ s/<(i|b|tt|p|br|a)[^>]*?>[^>]*$//gis;
++			$original_msg_text =~ s/<(i|b|tt|p|br|a)[^>]*?>[^>]*$//gis;
+ 
+-        $original_msg_text =~ s/\n/ <br\/>/g; # save line end
+-        $original_msg_text =~ s/<br\s*?\/>/<br\/>/g;
+-        $original_msg_text =~ s/(<(s|tt|p|i|b|u|a|br|img|style|script|iframe)\b[^<>]+?)(<|$)/$3/g;
+-        $original_msg_text =~ s/(<style.*?\/>)//gis;
+-        $original_msg_text =~ s/(<style.*?>.*?<\/style>)//gis;
+-        $original_msg_text =~ s/(<script\b.*?>.*?<\/script>)//gis;
+-        $original_msg_text =~ s/<\/?(?!(\/|i|b|tt|p|br|a)\b).*?(>|$)//gis;
+-        $original_msg_text =~ s/<img\b.*?(>|$)//gis;
+-        $original_msg_text =~ s/style/stylе/gis;
+-        $original_msg_text =~ s/iframe/ifrаme/gis;
+-        $original_msg_text =~ s/(\s+)on([^=]+)=/$1оn$2=/gis;
++			$original_msg_text =~ s/\n/ <br\/>/g; # save line end
++			$original_msg_text =~ s/<br\s*?\/>/<br\/>/g;
++			$original_msg_text =~ s/(<(s|tt|p|i|b|u|a|br|img|style|script|iframe)\b[^<>]+?)(<|$)/$3/g;
++			$original_msg_text =~ s/(<style.*?\/>)//gis;
++			$original_msg_text =~ s/(<style.*?>.*?<\/style>)//gis;
++			$original_msg_text =~ s/(<script\b.*?>.*?<\/script>)//gis;
++			$original_msg_text =~ s/<\/?(?!(\/|i|b|tt|p|br|a)\b).*?(>|$)//gis;
++			$original_msg_text =~ s/<img\b.*?(>|$)//gis;
++			$original_msg_text =~ s/style/stylе/gis;
++			$original_msg_text =~ s/iframe/ifrаme/gis;
++			$original_msg_text =~ s/(\s+)on([^=]+)=/$1оn$2=/gis;
+ 
+-        if ($preview) {
+-            $original_msg_text =~ s/<\s*(p|\/\s*p)[^>]*?>//gis;
+-            $original_msg_text =~ s/(<(b|u|i)\b[^>]*?>|<\/(b|u|i)>)//gis;
+-        }
++			# переведём ссылки в бб-код для красивого отображения,
++			# если нет текста ссылки, то подставим фразу, чтобы далее они правильно обрабатывались
++			my ($time, $time_spent) = (Time::HiRes::time(), 0);
++			my $link_text_replace = \&link_text_replace;
++			$original_msg_text =~ s/<a.+?href\s?=\s?['"]?([^'"> ]+).*?>(.*?)<\s*\/\s*a\s*>/$link_text_replace->($1, $2)/ge;
++			$time_spent = Time::HiRes::time() - $time;
++			$L->warn("Преобразование html-ссылок в bbcode заняло более 20мс ($time_spent):\n" . Dumper($message_model)) if ($time_spent > 0.020);
+ 
+-        # переведём ссылки в бб-код для красивого отображения,
+-        # если нет текста ссылки, то подставим фразу, чтобы далее они правильно обрабатывались
+-        my ($time, $time_spent) = (Time::HiRes::time(), 0);
+-        my $link_text_replace = \&link_text_replace;
+-        $original_msg_text =~ s/<a.+?href\s?=\s?['"]?([^'"> ]+).*?>(.*?)<\s*\/\s*a\s*>/$link_text_replace->($1, $2)/ge;
+-        $time_spent = Time::HiRes::time() - $time;
+-        $L->warn("Преобразование html-ссылок в bbcode заняло более 20мс ($time_spent):\n" . Dumper($message_model)) if ($time_spent > 0.020);
++			# кривые ссылки вырежем, чтобы ничего не портили
++			$original_msg_text =~ s/<\s*(a|\/\s*a)[^>]*?>//gis;
+ 
+-        # кривые ссылки вырежем, чтобы ничего не портили
+-        $original_msg_text =~ s/<\s*(a|\/\s*a)[^>]*?>//gis;
++			#заменим английскую c на русскую с, чтобы не работали переходы по ссылкам без подтверждения
++			$original_msg_text =~ s/script/sсript/ig;
+ 
+-        #заменим английскую c на русскую с, чтобы не работали переходы по ссылкам без подтверждения
+-        $original_msg_text =~ s/script/sсript/ig;
+-
+-        #уберем коментарии в собщениях
+-        $original_msg_text =~ s/<!//ig;
+-
++			#уберем коментарии в собщениях
++			$original_msg_text =~ s/<!//ig;
++		}
++		
++		if ($preview) {
++			$original_msg_text =~ s/<\s*(p|\/\s*p)[^>]*?>//gis;
++			$original_msg_text =~ s/(<(b|u|i)\b[^>]*?>|<\/(b|u|i)>)//gis;
++		}
++		
+         my $msgText = Spaces::Text::Object->new(\$original_msg_text);
+-
+         $msgText->Prepare()->ShowSpoilers(1);
