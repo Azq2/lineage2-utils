@@ -174,5 +174,14 @@ input[type="submit"]:hover, select:hover, button.btn:hover {
 	position: fixed;
 	opacity: 0.7;
 	border-radius: 6px;
-	cursor: pointer;color:#FFFF00
+	cursor: pointer;
+	color:#FFFF00
+}
+
+.lang_selector {
+	z-index: 999999999999999;
+	padding: 20px;
+	top: 0;
+	right: 10px;
+	position: absolute;
 }
