@@ -12,3 +12,8 @@
 	</head>
 	
 	<body>
+		<div class="lang_selector">
+			<a href="?lang=ru&amp;back=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Русский</a> | 
+			<a href="?lang=ua&amp;back=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Українська</a> | 
+			<a href="?lang=en&amp;back=<?= urlencode($_SERVER['REQUEST_URI']) ?>">English</a>
+		</div>

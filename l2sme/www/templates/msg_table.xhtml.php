@@ -1,24 +1,24 @@
 
-<div id="up_to_page">Наверх</div>
+<div id="up_to_page"><?= L('Наверх') ?></div>
 
 <div id="menu">
-	<a href="?"><button class="btn">Новый</button></a>
-	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn">Скачать</button></a>
-	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>&amp;raw=1"><button class="btn">Скачать (незашифрованный)</button></a>
+	<a href="?"><button class="btn"><?= L('Новый') ?></button></a>
+	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn"><?= L('Скачать') ?></button></a>
+	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>&amp;raw=1"><button class="btn"><?= L('Скачать (незашифрованный)') ?></button></a>
 	
 	&nbsp;&nbsp;&nbsp;
 	ID: <input id="search_id" value="" type="text" size="6" />
 	<input value="&gt;" type="submit" id="do_search_id" />
 	&nbsp;&nbsp;&nbsp;
 	<input id="search" value="" type="text" size="50" />
-	<input value="Поиск" type="submit" id="do_search_text" />
+	<input value="<?= L('Поиск') ?>" type="submit" id="do_search_text" />
 </div>
 
 <table class="l2sysmsgs">
 	<tr>
 		<th>ID</th>
-		<th>Сообщение</th>
-		<th>Доп. сообщение</th>
+		<th><?= L('Сообщение') ?></th>
+		<th><?= L('Доп. сообщение') ?></th>
 	</tr>
 <?php foreach ($messages as &$msg): ?>
 <tr
@@ -39,12 +39,12 @@
 		
 		<small style="color: red; display: none" id="sysmsg_edit_error"></small>
 		
-		Сообщение (в чате):<br />
+		<?= L('Сообщение (в чате)') ?>:<br />
 		<textarea class="max_width" name="msg" id="message"></textarea><br />
-		Сообщение (на экране):<br />
+		<?= L('Сообщение (на экране)') ?>:<br />
 		<textarea class="max_width" name="submsg" id="sub_message"></textarea><br />
 		<div class="hr"></div>
-		Положение на экране:<br />
+		<?= L('Положение на экране') ?>:<br />
 		<table width="100%">
 			<tr>
 				<td width="40%">
@@ -68,9 +68,9 @@
 				</td>
 				<td>
 					<div>
-						Цвет текста: <span id="color_block"></span><br />
+						<?= L('Цвет текста') ?>: <span id="color_block"></span><br />
 						<div id="color_selector"></div>
-						Непрозрачность [0-255]: <input type="text" size="3" id="transparent_value" value="" /><br />
+						<?= L('Непрозрачность') ?> [0-255]: <input type="text" size="3" id="transparent_value" value="" /><br />
 						<div id="transparent"></div>
 					</div>
 				</td>
@@ -78,26 +78,26 @@
 		</table>
 		<div class="hr"></div>
 		
-		Длительность показа сообщения: <input type="text" size="3" id="message_timeout" value="" /> секунд
+		<?= L('Длительность показа сообщения') ?>: <input type="text" size="3" id="message_timeout" value="" /> <?= L('секунд') ?>
 		<div style="float: right">
-			Показать:
+			<?= L('Показать') ?>:
 			<select name="message_show_speed" id="message_show_speed">
-				<option value="0">Мгновенно</option>
-				<option value="1">Постепенно</option>
-				<option value="11">Плавно</option>
+				<option value="0"><?= L('Мгновенно') ?></option>
+				<option value="1"><?= L('Постепенно') ?></option>
+				<option value="11"><?= L('Плавно') ?></option>
 			</select>
 		</div>
 		<br />
 		<div id="message_timeout_slider"></div>
 		<div class="hr"></div>
 		
-		<label title="Очень нихуёвая приебенция"><input type="checkbox" value="1" name="head" id="head_on_msg" /> Декоративная хренька над сообщением</label><br />
+		<label title="<?= L('Очень нихуёвая приебенция') ?>"><input type="checkbox" value="1" name="head" id="head_on_msg" /> <?= L('Декоративная хренька над сообщением') ?></label><br />
 		
-		Звук при сообщении:<br />
+		<?= L('Звук при сообщении') ?>:<br />
 		<input type="text" value="" name="music" id="msg_music" style="width: 97%" />
 		<div class="float">
-			<div class="left">Или выберите из списка:</div>
-			<div class="right"><input type="text" value="" name="music_search" id="msg_music_search" size="14" placeholder="Поиск..." class="right" /></div>
+			<div class="left"><?= L('Или выберите из списка') ?>:</div>
+			<div class="right"><input type="text" value="" name="music_search" id="msg_music_search" size="14" placeholder="<?= L('Поиск...') ?>" class="right" /></div>
 		</div>
 		
 		<div style="height: 150px; overflow-y: scroll" id="music_list">
@@ -109,8 +109,8 @@
 		<?php endforeach; ?>
 		</div>
 		<div class="hr"></div>
-		<input type="submit" id="save_lang" value="Сохранить" />
-		<input type="submit" value="Отмена" class="modal_window_close" w="edit_dialog" />
+		<input type="submit" id="save_lang" value="<?= L('Сохранить') ?>" />
+		<input type="submit" value="<?= L('Отмена') ?>" class="modal_window_close" w="edit_dialog" />
 	</div>
 </div>
 
@@ -154,7 +154,7 @@ $('#save_lang').click(function(e) {
 		}, 
 		"json"
 	).fail(function (e) {
-		$('#sysmsg_edit_error').html("Ошибка подключения к серверу. ").show();
+		$('#sysmsg_edit_error').html("<?= L('Ошибка подключения к серверу. ') ?>").show();
 	});
 });
 

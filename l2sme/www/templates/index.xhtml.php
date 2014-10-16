@@ -10,18 +10,19 @@
 <div style="display: block" class="modal_window">
 	<div>
 		<form action="?" method="POST" enctype="multipart/form-data">
-			Этот сервис предназначен для редактирования системных сообщений клиентов игры Lineage II High Five. <br />
-			Для начала редактирования выгрузите файл <b>systemmsg-ru.dat</b> или <b>SystemMsg-e.dat</b><br />
-			Поддерживается только 413 версия протокола. 
+			<?= L('Этот сервис предназначен для редактирования системных сообщений клиентов игры Lineage II High Five. ') ?><br />
+			<?= L('Для начала редактирования выгрузите файл') ?> <b>systemmsg-ru.dat</b> <?php L('или') ?> <b>SystemMsg-e.dat</b>
+				 <?php L('или') ?> <b>SystemMsg-k.dat</b><br />
+			<?= L('Поддерживается только 413 версия протокола. ') ?>
 			<div class="hr"></div>
-			Файл <b>systemmsg-ru.dat</b> или <b>SystemMsg-e.dat</b> (до 1 Mb):<br />
+			<?= L('Файл') ?> <b>systemmsg-ru.dat</b> <?= L('или') ?> <b>SystemMsg-e.dat</b> (<?= L('до %d Mb', 1) ?>):<br />
 			<input type="file" name="file" /><br />
 			<?php if ($errors): ?>
 			<small style="color: red"><?= implode("<br />", $errors) ?></small>
 			<?php endif; ?>
 			
 			<div class="hr"></div>
-			<input type="submit" value="Редактировать" />
+			<input type="submit" value="<?= L('Редактировать') ?>" />
 		</form>
 	</div>
 </div>

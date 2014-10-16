@@ -7,6 +7,25 @@
 	include 'rsa.php';
 	include 'binary.php';
 	
+	$languages = array("ru" => 1, "en" => 1, "ua" => 1);
+	
+	$sys_lang = 'en';
+	if (!isset($_COOKIE['lang']) || !isset($languages[$_COOKIE['lang']])) {
+		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+			$sys_lang = stripos('ru', $_SERVER['HTTP_ACCEPT_LANGUAGE']) >= 0 ? 'ru' : 'en';
+	} else
+		$sys_lang = $_COOKIE['lang'];
+	
+	if (isset($_GET['lang']) && isset($languages[$_GET['lang']])) {
+		if (isset($_GET['back']) && substr($_GET['back'], 0, 1) == '/') {
+			setcookie('lang', $_GET['lang'], time() + 3600 * 24 * 365 * 3, '/');
+			header("Location: ".$_GET['back']);
+			exit;
+		}
+	}
+	
+	define('L2_LANG', $sys_lang);
+	
 	$action = isset($_GET['action']) ? $_GET['action'] : '';
 	switch ($action) {
 		case "download":
@@ -56,18 +75,18 @@
 			$head_on_message = isset($_POST['head_on_message']) && $_POST['head_on_message'] ? 1 : 0;
 			
 			if ($opacity > 0xFF)
-				$errors[] = 'Неверное значение прозрачности ('.$opacity.')';
+				$errors[] = L('Неверное значение прозрачности (%s)', $opacity);
 			elseif ($position > 8)
-				$errors[] = 'Неверное значение позиции текста ('.$opacity.')';
+				$errors[] = L('Неверное значение позиции текста (%s)', $opacity);
 			elseif (!preg_match("/^[A-F0-9]{6}$/i", $color) > 0)
-				$errors[] = 'Неверное значение цвета ('.htmlspecialchars($color).')';
+				$errors[] = L('Неверное значение цвета (%s)', htmlspecialchars($color));
 			
 			if (!$errors) {
 				$file_md5 = isset($_GET['file_id']) ? preg_replace("/[^a-f0-9]/", "", $_GET['file_id']) : '';
 				$file_path = "tmp/".$file_md5;
 				try {
 					if (!file_exists($file_path) || !is_file($file_path))
-						throw new Exception("Файл не найден! Истекло время его хранения. Откройте его заново. ");
+						throw new Exception(L("Файл не найден! Истекло время его хранения. Откройте его заново. "));
 					
 					$bb = open_l2_file($file_path);
 					L2SystemMsg::parse($bb, $systemmsgs);
@@ -78,7 +97,7 @@
 					$b = $color & 0xFF;
 					
 					if (!isset($systemmsgs['strings'][$id]))
-						throw new Exception("Сообщение ".$id." не найдено!");
+						throw new Exception(L("Сообщение %s не найдено!", $id));
 					$m = &$systemmsgs['strings'][$id];
 					
 					$m[L2SystemMsg::POSITION] = $position;
@@ -100,7 +119,7 @@
 					
 					write_l2_file($file_path, $w->getData());
 				} catch (Exception $e) {
-					$errors[] = 'Внезапная ошибка разбора файла ('.get_class($e).'): '.$e->getMessage();
+					$errors[] = L('Внезапная ошибка разбора файла (%s): %s', get_class($e), $e->getMessage());
 					write_log("exception (update file): ".get_class($e).": ".$e->getMessage());
 				}
 			}
@@ -126,7 +145,7 @@
 				L2SystemMsg::parse($b, $systemmsgs);
 			} catch (Exception $e) {
 				write_log("exception (edit_file): ".get_class($e).": ".$e->getMessage());
-				die('Внезапная ошибка разбора файла ('.get_class($e).'): '.$e->getMessage());
+				die(L('Внезапная ошибка разбора файла (%s): %s', get_class($e), $e->getMessage()));
 			}
 			$sounds = file("files/sounds.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 			unset($b);
@@ -145,9 +164,9 @@
 			$errors = array();
 			if (isset($_FILES['file'])) {
 				if ($_FILES['file']['error'] > 0)
-					$errors[] = 'Ошибка загрузки файла #'.$_FILES['file']['error'];
+					$errors[] = L('Ошибка загрузки файла #%d', $_FILES['file']['error']);
 				elseif ($_FILES['file']['size'] >= 1024 * 1024)
-					$errors[] = 'Максимальный размер файла - 1 Mb. ';
+					$errors[] = L('Максимальный размер файла - %d Mb. ', 1);
 				else {
 					$r = open_l2_file($_FILES['file']['tmp_name']);
 					try {
@@ -162,13 +181,13 @@
 						header("Location: ?action=edit_file&file_id=".$md5."&file_name=".urlencode($file_name));
 						exit;
 					} catch (Exception $e) {
-						$errors[] = 'Ошибка разбора файла ('.get_class($e).'): '.$e->getMessage();
+						$errors[] = L('Ошибка разбора файла (%s): %s', get_class($e), $e->getMessage());
 						write_log("exception: ".get_class($e).": ".$e->getMessage());
 					}
 				}
 			}
 			
-			start_html_page("Редактор SystemMsg-ru.dat/SystemMsg-e.dat для Lineage II High Five");
+			start_html_page(L("Редактор SystemMsg-ru.dat/SystemMsg-e.dat для Lineage II High Five"));
 			echo tpl("index.xhtml", array(
 				"errors" => $errors
 			));
@@ -330,4 +349,23 @@
 	
 	function str_add_null($s) {
 		return strlen($s) > 0 ? $s."\0" : "";
+	}
+	
+	function L() {
+		static $language_data = NULL;
+		
+		$args = array();
+		if (func_num_args() > 1) {
+			$args = func_get_args();
+			$msg = &$args[0];
+		} else
+			$msg = func_get_arg(0);
+		
+		if (L2_LANG != 'ru') {
+			if (!$language_data)
+				$language_data = parse_ini_file("../lang/".L2_LANG.".ini");
+			$msg = $language_data[sprintf("%08X", crc32($msg))];
+		}
+		
+		return $args ? call_user_func_array("sprintf", $args) : $msg;
 	}
