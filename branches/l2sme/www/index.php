@@ -363,7 +363,7 @@
 		
 		if (L2_LANG != 'ru') {
 			if (!$language_data)
-				$language_data = parse_ini_file("../lang/".L2_LANG.".ini");
+				$language_data = parse_ini_file("lang/".L2_LANG.".ini");
 			$msg = $language_data[sprintf("%08X", crc32($msg))];
 		}
 		
