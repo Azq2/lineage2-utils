@@ -32,7 +32,7 @@
 	$languages = array("en", "ua");
 	foreach ($languages as $lang) {
 		echo "[$lang]\n";
-		if (file_exists("lang/$lang.ini")) {
+		if (file_exists("www/lang/$lang.ini")) {
 			$lang_data = parse_ini_file("lang/$lang.ini");
 			foreach ($lang_data as $id => $msg) {
 				if (!isset($messages[$id])) {
@@ -55,5 +55,5 @@
 			$ini_data .= "; $lang_escaped\n";
 			$ini_data .= "$id = \"$lang_escaped\"\n";
 		}
-		file_put_contents("lang/$lang.ini", $ini_data);
+		file_put_contents("www/lang/$lang.ini", $ini_data);
 	}
