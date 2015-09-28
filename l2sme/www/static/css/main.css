@@ -1,7 +1,7 @@
 * { font: inherit }
 body {
 	background-color: #110d08;
-	color: #756959;
+	color: #A19382;
 	font-size: 16px;
 	font-family: Tahoma;
 	padding: 10px;
@@ -34,18 +34,18 @@ tr {
 }
 
 a {
-	color: #756959
+	color: #A19382
 }
 
-a:visited {
-	color: #655949
+a:hover {
+	color: #8E7D67
 }
 
 .l2sysmsgs, .screen_position {
 	background-color: #211d18;
 	border: 1px solid yellow;
 	border-collapse: collapse;
-	color: #756959;
+	color: #A19382;
 }
 .screen_position td {
 	width: 80px;
@@ -67,7 +67,7 @@ a:visited {
 	white-space: pre-line;
 }
 .l2sysmsgs th {
-	color: #756959
+	color: #A19382
 }
 .l2sysmsgs td[s] {
 	
@@ -107,7 +107,7 @@ a:visited {
 	background-color: #110d08;
 	border: 1px solid #756959;
 	padding: 10px;
-	color: #756959;
+	color: #A19382;
 }
 
 .max_width { width: 97%; }
@@ -115,7 +115,7 @@ a:visited {
 textarea, select, option, input, button.btn {
 	background-color: #211d18;
 	border: 1px solid #756959;
-	color: #756959;
+	color: #A19382;
 }
 textarea:focus, input[type="text"]:focus, button.btn:focus, select:focus {
 	background-color: #110d08;

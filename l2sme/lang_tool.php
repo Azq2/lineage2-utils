@@ -33,7 +33,7 @@
 	foreach ($languages as $lang) {
 		echo "[$lang]\n";
 		if (file_exists("www/lang/$lang.ini")) {
-			$lang_data = parse_ini_file("lang/$lang.ini");
+			$lang_data = parse_ini_file("www/lang/$lang.ini");
 			foreach ($lang_data as $id => $msg) {
 				if (!isset($messages[$id])) {
 					echo "  -$id\n";
