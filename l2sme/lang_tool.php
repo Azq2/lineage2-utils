@@ -52,7 +52,8 @@
 		$ini_data = "";
 		foreach ($lang_data as $id => $msg) {
 			$lang_escaped = addcslashes($msg, "\"\\\n\r\t\v\0");
-			$ini_data .= "; $lang_escaped\n";
+			$lang_escaped_orig = addcslashes($messages[$id], "\"\\\n\r\t\v\0");
+			$ini_data .= "; $lang_escaped_orig\n";
 			$ini_data .= "$id = \"$lang_escaped\"\n";
 		}
 		file_put_contents("www/lang/$lang.ini", $ini_data);
