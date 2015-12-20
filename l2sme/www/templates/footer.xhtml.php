@@ -1,8 +1,8 @@
-
-		<center><a href="http://zhumarin.ru/index.html"><?= date("Y") ?> &copy; Kirill Zhumarin</a></center>
+<?php if (!$noindex): ?>
+		<center><a href="http://zhumarin.ru"><?= date("Y") ?> &copy; Kirill Zhumarin</a></center>
+<?php endif; ?>
 
 <!-- Yandex.Metrika counter -->
-<!--
 <script type="text/javascript">
 (function (d, w, c) {
     (w[c] = w[c] || []).push(function() {
@@ -29,7 +29,6 @@
 })(document, window, "yandex_metrika_callbacks");
 </script>
 <noscript><div><img src="//mc.yandex.ru/watch/25609397<?= $noindex ? '?ut=noindex' : '' ?>" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
--->
 <!-- /Yandex.Metrika counter -->
 	</body>
 </html>
