@@ -1,4 +1,4 @@
-<?php if (!$noindex): ?>
+<?php if ($noindex): ?>
 		<center><a href="http://zhumarin.ru"><?= date("Y") ?> &copy; Kirill Zhumarin</a></center>
 <?php endif; ?>
 
