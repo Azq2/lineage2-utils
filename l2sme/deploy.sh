@@ -10,10 +10,10 @@ rsync -rpCv --checksum  "www/files/" "$1/www/files/"
 tar -C "$1/www/files" -xf "$1/www/files/files.tar.gz"
 
 # костылище :D
-tmp_dir="H.'www/tmp/';"
+tmp_dir="H.'www/tmp/'"
 tmp_dir=${tmp_dir//\//\\\/}
 sed -i "s/const STATIC_REVISOIN = [^;]*;/const STATIC_REVISOIN = '$revision';/g" "$1/www/index.php"
-sed -i "s/const L2_TMP_DIR = [^;]*;/const L2_TMP_DIR = $tmp_dir/g" "$1/www/index.php"
+sed -i "s/'L2_TMP_DIR', \"[^\"]*\"/'L2_TMP_DIR', $tmp_dir/g" "$1/www/index.php"
 
 echo "TPL..."
 find $1/www/templates -iname '*.xhtml.php' -exec perl -i -p -e 's/\s+/ /mig' {} \;

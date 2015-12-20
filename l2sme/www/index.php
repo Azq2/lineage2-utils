@@ -1,8 +1,8 @@
 <?php
-	include '../core/init.php';
-	
 	const STATIC_REVISOIN = 1;
-	const L2_TMP_DIR = "/tmp/";
+	
+	include '../core/init.php';
+	define('L2_TMP_DIR', "/tmp/");
 	
 	use L2File\SystemMsg;
 	
