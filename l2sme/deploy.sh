@@ -6,6 +6,7 @@ mkdir -p "$1"
 revision=($(find www/static/js www/static/css -iname '*.js' -o -iname '*.css' -exec cat {} \; | md5sum))
 
 rsync -rpCv --checksum --delete "./" "$1/" --exclude 'www/tmp/*' --exclude 'www/files/*'
+rsync -rpCv --checksum --delete "./core/" "$1/core/"
 rsync -rpCv --checksum  "www/files/" "$1/www/files/"
 tar -C "$1/www/files" -xf "$1/www/files/files.tar.gz"
 
