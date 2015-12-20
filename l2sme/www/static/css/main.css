@@ -59,6 +59,7 @@ a:hover {
 	background-color: #312d28;
 }
 
+.l2sysmsgs { width: 100% }
 .l2sysmsgs td, .l2sysmsgs th, .l2sysmsgs tr, .screen_position tr, .screen_position td {
 	border: 1px solid #756959
 }
@@ -69,18 +70,24 @@ a:hover {
 .l2sysmsgs th {
 	color: #A19382
 }
-.l2sysmsgs td[s] {
-	
-}
-.l2sysmsgs td[m] {
-	width: 60%;
-}
 .l2sysmsgs tr {
 	cursor: pointer;
 }
-.l2sysmsgs tr:hover {
+.l2sysmsgs tr:hover, .l2sysmsgs tbody.blk:hover > tr {
 	background-color: #110d08;
 }
+
+.l2sysmsgs td:nth-child(2) {
+	width: 60%;
+}
+
+.l2sysmsgs-diff td:nth-child(2) {
+	width: 50%;
+}
+.l2sysmsgs-diff td:nth-child(3) {
+	width: 50%;
+}
+
 .modal_window {
 	position: fixed;
 	top: 0; right: 0; bottom: 0; left: 0;
@@ -106,10 +113,9 @@ a:hover {
 	border-radius: 5px;
 	background-color: #110d08;
 	border: 1px solid #756959;
-	padding: 10px;
 	color: #A19382;
 }
-
+.padd { padding: 10px }
 .max_width { width: 97%; }
 
 textarea, select, option, input, button.btn {
@@ -120,17 +126,14 @@ textarea, select, option, input, button.btn {
 textarea:focus, input[type="text"]:focus, button.btn:focus, select:focus {
 	background-color: #110d08;
 }
-input[type="submit"]:hover, select:hover, button.btn:hover {
+input[type="submit"]:hover, select:hover, button.btn:hover, button.btn.clicked {
 	background-color: #312d28;
 }
-#color_selector {
+#color_selector, #bulk_color_selector {
 	overflow: hidden;
 	position: absolute;
 	z-index: 9999999;
 	height: 0
-}
-#color_block {
-	cursor: pointer
 }
 .grid_item { display: inline-block; position: relative }
 .hr { padding: 0; margin: 5px 0 5px 0; border-top: 1px dotted #756959 }
@@ -184,4 +187,85 @@ input[type="submit"]:hover, select:hover, button.btn:hover {
 	top: 0;
 	right: 10px;
 	position: absolute;
+}
+
+.sound_play {
+    vertical-align: middle;
+    margin: -8px;
+    padding: 8px;
+}
+
+.tabs { }
+.tabs-header { padding-left: 5px }
+.tab {
+	background: #312d28;
+	display: inline-block;
+	padding: 4px;
+	border: 1px solid #756959;
+	border-radius: 4px 4px 0 0;
+	margin-bottom: -1px;
+	cursor: pointer
+}
+.tab.active {
+	background: #110d08;
+	border-bottom: 1px solid #110d08;
+}
+.tab-content {
+	display: none;
+	border-top: 1px solid #756959;
+	padding-top: 4px;
+}
+.tab-content.active {
+	display: block
+}
+.l2sysmsgs-select td:nth-child(1) {
+    background-image: url(/static/images/check.png);
+    background-repeat: no-repeat;
+	background-position: 3px 5px;
+    padding-left: 20px;
+}
+
+.l2sysmsgs-select .disabled td:nth-child(1) {
+	background-image: url(/static/images/remove.png);
+}
+
+.l2sysmsgs-select .checked tr:nth-child(1) > td:nth-child(1), 
+.l2sysmsgs-select tr.checked > td:nth-child(1) {
+    background-image: url(/static/images/checked.png);
+}
+.l2sysmsgs tr.checked, .l2sysmsgs .blk.checked tr {
+	background-color: #3A342C !important;
+}
+.l2sysmsgs tr:hover.checked, .l2sysmsgs .blk.checked:hover tr {
+	background-color: #312C25 !important;
+}
+
+.js-open_color_picker, .pointer, label {
+	cursor: pointer
+}
+.save_error {
+	color: red;
+	display: none
+}
+
+button, input[type="submit"] {
+	cursor: pointer
+}
+input[type="file"] {
+    margin: 3px 0px;
+}
+
+.l2sysmsgs .sm > td {
+	background-image: url(/static/images/screen.png);
+    background-repeat: no-repeat;
+    background-position: 4px 5px;
+    padding-left: 24px;
+}
+
+button.btn-download {
+	border: 1px solid #B09B79;
+	background-color: #383027;
+	color: #B09B79;
+	font-weight: bold;
+	padding: 0 10px
 }

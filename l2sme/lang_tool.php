@@ -32,8 +32,8 @@
 	$languages = array("en", "ua");
 	foreach ($languages as $lang) {
 		echo "[$lang]\n";
-		if (file_exists("www/lang/$lang.ini")) {
-			$lang_data = parse_ini_file("www/lang/$lang.ini");
+		if (file_exists("core/lang/$lang.ini")) {
+			$lang_data = parse_ini_file("core/lang/$lang.ini");
 			foreach ($lang_data as $id => $msg) {
 				if (!isset($messages[$id])) {
 					echo "  -$id\n";
@@ -44,7 +44,7 @@
 			$lang_data = array();
 		foreach ($messages as $id => $msg) {
 			if (!isset($lang_data[$id])) {
-				$lang_data[$id] = $msg;
+				$lang_data[$id] = 'TRANSLATE_ME: '.$msg;
 				echo "  +$id\n";
 			}
 		}
@@ -56,5 +56,5 @@
 			$ini_data .= "; $lang_escaped_orig\n";
 			$ini_data .= "$id = \"$lang_escaped\"\n";
 		}
-		file_put_contents("www/lang/$lang.ini", $ini_data);
+		file_put_contents("core/lang/$lang.ini", $ini_data);
 	}

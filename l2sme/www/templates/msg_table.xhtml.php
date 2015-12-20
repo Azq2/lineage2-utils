@@ -3,8 +3,15 @@
 
 <div id="menu">
 	<a href="?"><button class="btn"><?= L('Новый') ?></button></a>
-	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn"><?= L('Скачать') ?></button></a>
-	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>&amp;raw=1"><button class="btn"><?= L('Скачать (незашифрованный)') ?></button></a>
+	&nbsp;&nbsp;&nbsp;
+	<a href="?action=download&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn btn-download">
+		<b><?= L('Скачать') ?></b>
+	</button></a>
+	&nbsp;&nbsp;&nbsp;
+	
+	<?php if ($is_diff): ?>
+	<a href="?action=edit_file&amp;file_id=<?= $file_id ?>&amp;file_name=<?= urlencode($file_name) ?>"><button class="btn"><?= L('Редактор') ?></button></a>
+	<?php endif; ?>
 	
 	&nbsp;&nbsp;&nbsp;
 	ID: <input id="search_id" value="" type="text" size="6" />
@@ -12,32 +19,214 @@
 	&nbsp;&nbsp;&nbsp;
 	<input id="search" value="" type="text" size="50" />
 	<input value="<?= L('Поиск') ?>" type="submit" id="do_search_text" />
+	
+	<div style="margin-top: 3px">
+		<?php if (!$is_diff): ?>
+			<b><?= L('Фильтры:') ?></b>
+			<label><input type="checkbox" value="1" name="filter_screen" id="filter_screen" class="msg_filter" /> <?= L('Только на экране') ?></label>
+			&nbsp;&nbsp;
+			<label><input type="checkbox" value="1" name="filter_sound" id="filter_sound" class="msg_filter" /> <?= L('Только со звуком') ?></label>
+			&nbsp;&nbsp;
+			<label><input type="checkbox" value="1" name="filter_colors" id="filter_colors" class="msg_filter" /> <?= L('Только цветные') ?></label>
+		<?php endif; ?>
+		
+		<?php if ($is_diff): ?>
+		<div>
+			<b><?= L('Сравнивать:') ?></b><br />
+			<table>
+				<tr>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_colors" class="msg_diff" /> <?= L('Цвет') ?></label></td>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_opacity" class="msg_diff" /> <?= L('Прозрачность') ?></label></td>
+				</tr>
+				<tr>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_chat_msg" class="msg_diff" checked="checked" /> <?= L('Сообщение чата') ?></label></td>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_scr_msg" class="msg_diff" checked="checked" /> <?= L('Сообщение экрана') ?></label></td>
+				</tr>
+				<tr>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_position" class="msg_diff" /> <?= L('Позиция') ?></label></td>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_sound" class="msg_diff" /> <?= L('Звук') ?></label></td>
+				</tr>
+				<tr>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_speed" class="msg_diff" /> <?= L('Скорость показа') ?></label></td>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_duration" class="msg_diff" /> <?= L('Длительность') ?></label></td>
+				</tr>
+				<tr>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_head" class="msg_diff" /> <?= L('Арка') ?></label></td>
+					<td><label><input type="checkbox" value="1" name="xuj" id="cb_diff_not_found" class="msg_diff" /> <?= L('Новые сообщения') ?></label></td>
+				</tr>
+			</table>
+		</div>
+		<?php endif; ?>
+		<?php if (!$is_diff): ?>
+		&nbsp;&nbsp;
+		<button class="btn" id="toggle_bulk"><?= L('Выбрать несколько') ?></button>
+		<?php endif; ?>
+	</div>
+	
+	<?php if ($is_diff): ?>
+		<div class="hr"></div>
+		<button class="btn js-merge"><?= L('Объединить') ?></button> &#8592; <?= L('жми сюда, когда выберешь сообщения') ?> (<b><?= L('выбрано:') ?></b> <span id="selected_cnt">0</span>)<br />
+		<div class="hr"></div>
+	<?php endif; ?>
+	
+	<div<?php if (!$is_diff): ?> style="margin-top: 3px; display: none" id="bulk_buttons"<?php endif; ?>>
+		<?php if (!$is_diff): ?>
+		<button class="btn js-open_bulk"><?= L('Пакетные операции') ?></button> &#8592; <?= L('жми сюда, когда выберешь сообщения') ?> (<b><?= L('выбрано:') ?></b> <span id="selected_cnt">0</span>)<br /><br />
+		<?php endif; ?>
+		
+		<button class="btn js-selection" data-dir="1"><?= L('Выбрать всё') ?></button>
+		&nbsp;&nbsp;
+		<button class="btn js-selection" data-dir="0"><?= L('Сбросить') ?></button>
+		&nbsp;&nbsp;
+		<button class="btn js-selection" data-dir="-1"><?= L('Сбросить всё') ?></button>
+	</div>
+	
 </div>
-
+<?php if (!$is_diff): ?>
 <table class="l2sysmsgs">
 	<tr>
 		<th>ID</th>
-		<th><?= L('Сообщение') ?></th>
+		<th><?= L('Сообщение') ?> (<span id="search_total"><?= count($messages) ?></span>)</th>
 		<th><?= L('Доп. сообщение') ?></th>
 	</tr>
 <?php foreach ($messages as &$msg): ?>
-<tr
-	N="<?= $msg[L2SystemMsg::ID] ?>"
-	S="<?= $msg[L2SystemMsg::POSITION] ?>,<?= $msg[L2SystemMsg::DURATION] ?>,<?= $msg[L2SystemMsg::DELAY_SPEED] ?>,<?= $msg[L2SystemMsg::HEAD] ?>,<?= $msg[L2SystemMsg::A] ?>,<?= htmlspecialchars(un_null($msg[L2SystemMsg::SOUND])) ?>"
-	style="opacity:<?= round($msg[L2SystemMsg::A] / 255, 4) ?>;color:#<?= sprintf("%02X%02X%02X", $msg[L2SystemMsg::R], $msg[L2SystemMsg::G], $msg[L2SystemMsg::B]) ?>"
->
-	<td><?= $msg[L2SystemMsg::ID] ?></td>
-	<td m><?= htmlspecialchars(un_null($msg[L2SystemMsg::MESSAGE])) ?></td>
-	<td s><?= htmlspecialchars(un_null($msg[L2SystemMsg::SUB_MSG])) ?></td>
+<tr id="m<?= $msg[L2File\SystemMsg::ID] ?>" style="opacity:<?= round($msg[L2File\SystemMsg::A] / 255, 4) ?>;color:#<?= sprintf("%02X%02X%02X", $msg[L2File\SystemMsg::R], $msg[L2File\SystemMsg::G], $msg[L2File\SystemMsg::B]) ?>">
+	<td><?= $msg[L2File\SystemMsg::ID] ?></td>
+	<td><?= htmlspecialchars(un_null($msg[L2File\SystemMsg::MESSAGE])) ?></td>
+	<td><?= htmlspecialchars(un_null($msg[L2File\SystemMsg::SUB_MSG])) ?></td>
 </tr>
 <?php endforeach; ?>
 </table>
+<?php else: ?>
+<?= L('Отображается:') ?> <span id="search_total"><?= $visible_cnt ?></span> <?= L('из') ?> <?= $total ?>
+<table class="l2sysmsgs l2sysmsgs-select l2sysmsgs-diff">
+	<tr>
+		<th>ID</th>
+		<th><?= L('Донор ({0})', htmlspecialchars($donor_name)) ?></th>
+		<th><?= L('Ваш файл ({0})', htmlspecialchars($file_name)) ?></th>
+	</tr>
+<?php foreach ($messages as $id => &$msg): ?>
+	<?php if (strlen(trim($msg[0][1])) || strlen(trim($msg[1][1]))): ?>
+		<tbody id="m<?= $id ?>" class="blk<?= !$msg[0] ? ' disabled' : '' ?>"<?= $msg[2] ? ' style="display:none"' : '' ?>>
+			<tr>
+				<td rowspan="2"><?= $id ?></td>
+				
+				<?php if ($msg[0]): ?>
+					<td style="color:#<?= $msg[0][2] ?>;opacity:<?= $msg[0][3] ?>"><?= htmlspecialchars($msg[0][0]) ?></td>
+				<?php else: ?>
+					<td></td>
+				<?php endif; ?>
+				
+				<?php if ($msg[1]): ?>
+					<td style="color:#<?= $msg[1][2] ?>;opacity:<?= $msg[1][3] ?>"><?= htmlspecialchars($msg[1][0]) ?></td>
+				<?php else: ?>
+					<td></td>
+				<?php endif; ?>
+			</tr>
+			<tr class="sm">
+				<?php if ($msg[0]): ?>
+					<td style="color:#<?= $msg[0][2] ?>;opacity:<?= $msg[0][3] ?>"><?= htmlspecialchars($msg[0][1]) ?></td>
+				<?php else: ?>
+					<td></td>
+				<?php endif; ?>
+				
+				<?php if ($msg[1]): ?>
+					<td style="color:#<?= $msg[1][2] ?>;opacity:<?= $msg[1][3] ?>"><?= htmlspecialchars($msg[1][1]) ?></td>
+				<?php else: ?>
+					<td></td>
+				<?php endif; ?>
+			</tr>
+		</tbody>
+	<?php else: ?>
+		<tr id="m<?= $id ?>"<?= $msg[2] ? ' style="display:none"' : '' ?><?= !$msg[0] ? ' class="disabled"' : '' ?>>
+			<td><?= $id ?></td>
+			<?php if ($msg[0]): ?>
+				<td style="color:#<?= $msg[0][2] ?>;opacity:<?= $msg[0][3] ?>"><?= htmlspecialchars($msg[0][0]) ?></td>
+			<?php else: ?>
+				<td></td>
+			<?php endif; ?>
+			
+			<?php if ($msg[1]): ?>
+				<td style="color:#<?= $msg[1][2] ?>;opacity:<?= $msg[1][3] ?>"><?= htmlspecialchars($msg[1][0]) ?></td>
+			<?php else: ?>
+				<td></td>
+			<?php endif; ?>
+		</tr>
+	<?php endif; ?>
+<?php endforeach; ?>
+</table>
+<?php endif; ?>
+
+<?php if ($is_diff): ?>
+<div id="merge_window" class="modal_window">
+	<div class="padd">
+		<div class="save_error"></div>
+		
+		<?= L('Выбрано {0} сообщений.', '<span id="win_selected_cnt"></span>') ?>
+		<div class="hr"></div>
+		
+		<?= L('Выберите, какие параметры скопировать при объединении:') ?>
+		<div class="hr"></div>
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_message" /> <?= L('Текст в чате') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_sub_msg" /> <?= L('Текст на экране') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_position" /> <?= L('Позиция на экране') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_delay_speed" /> <?= L('Скорость появления') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_duration" /> <?= L('Время показа') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_sound" /> <?= L('Звук при сообщении') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_color" /> <?= L('Цвет') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_opacity" /> <?= L('Прозрачность') ?></label><br />
+		<label><input type="checkbox" value="1" name="xuj" checked="checked" id="cb_copy_head" /> <?= L('Арка над сообщением') ?></label><br />
+		<div class="hr"></div>
+		
+		<input type="submit" id="save_merge" value="<?= L('Сохранить') ?>" />
+		<input type="submit" value="<?= L('Отмена') ?>" class="modal_window_close" w="merge_window" />
+	</div>
+</div>
+<?php else: ?>
+<div id="bulk_edit_dialog" class="modal_window">
+	<div class="padd">
+		<div class="save_error"></div>
+		
+		<?= L('Выбрано {0} сообщений.', '<span id="win_selected_cnt"></span>') ?>
+		<div class="hr"></div>
+		
+		<label><input type="checkbox" value="1" name="xuj" id="cb_delete_chat_msg" /> <?= L('Удалить сообщение в чате') ?></label><br />
+		<small><?= L('Будет установлено пустое сообщение вместо реального.') ?></small>
+		<div class="hr"></div>
+		
+		<label><input type="checkbox" value="1" name="xuj" id="cb_delete_scr_msg" /> <?= L('Удалить сообщение на экране') ?></label><br />
+		<small><?= L('Сообщение больше не будет выводиться на экране.') ?></small>
+		<div class="hr"></div>
+		
+		<label><input type="checkbox" value="1" name="xuj" id="cb_delete_sound" /> <?= L('Отключить звуковое оповещение') ?></label><br />
+		<?= L('Отключает звук при сообщении.') ?>
+		<div class="hr"></div>
+		
+		<label><input type="checkbox" value="1" name="xuj" id="cb_change_color" /> <?= L('Перекрасить в цвет') ?></label><br />
+		<?= L('Установить цвет текста') ?>: 
+			<span id="bulk_color_block" class="js-open_color_picker" data-selector="#bulk_color_selector"></span>
+			[<span class="js-reset_color pointer" data-selector="#bulk_color_selector"><?= L('сброс') ?></span>]
+			<br />
+		<div id="bulk_color_selector"></div>
+		<?= L('Непрозрачность') ?> [0-255]:
+		<input type="text" size="3" id="bulk_transparent_value" class="js-slider_update" data-slider="bulk_transparent" value="" /><br />
+		<div id="bulk_transparent"></div>
+		<div class="hr"></div>
+		
+		<b><?= L('Пример:') ?></b>
+		<textarea id="bulk_example_text" class="max_width" readonly="readonly"><?= L("Съешь же ещё этих мягких французских булок, да выпей чаю.") ?></textarea>
+		
+		<div class="hr"></div>
+		
+		<input type="submit" id="save_bulk" value="<?= L('Сохранить') ?>" />
+		<input type="submit" value="<?= L('Отмена') ?>" class="modal_window_close" w="bulk_edit_dialog" />
+	</div>
+</div>
 
 <div id="edit_dialog" class="modal_window">
-	<div>
+	<div class="padd">
 		<input type="hidden" name="id" id="message_id" value="" />
-		
-		<small style="color: red; display: none" id="sysmsg_edit_error"></small>
+		<div class="save_error"></div>
 		
 		<?= L('Сообщение (в чате)') ?>:<br />
 		<textarea class="max_width" name="msg" id="message"></textarea><br />
@@ -68,9 +257,13 @@
 				</td>
 				<td>
 					<div>
-						<?= L('Цвет текста') ?>: <span id="color_block"></span><br />
+						<?= L('Цвет текста') ?>:
+						<span id="color_block" class="js-open_color_picker" data-selector="#color_selector"></span>
+						[<span class="js-reset_color pointer" data-selector="#color_selector"><?= L('сброс') ?></span>]
+						<br />
 						<div id="color_selector"></div>
-						<?= L('Непрозрачность') ?> [0-255]: <input type="text" size="3" id="transparent_value" value="" /><br />
+						<?= L('Непрозрачность') ?> [0-255]:
+						<input type="text" size="3" id="transparent_value" value="" class="js-slider_update" data-slider="transparent" /><br />
 						<div id="transparent"></div>
 					</div>
 				</td>
@@ -78,7 +271,8 @@
 		</table>
 		<div class="hr"></div>
 		
-		<?= L('Длительность показа сообщения') ?>: <input type="text" size="3" id="message_timeout" value="" /> <?= L('секунд') ?>
+		<?= L('Длительность показа сообщения') ?>:
+		<input type="text" size="3" id="message_timeout" value="" class="js-slider_update" data-slider="message_timeout_slider" /> <?= L('секунд') ?>
 		<div style="float: right">
 			<?= L('Показать') ?>:
 			<select name="message_show_speed" id="message_show_speed">
@@ -91,7 +285,9 @@
 		<div id="message_timeout_slider"></div>
 		<div class="hr"></div>
 		
-		<label title="<?= L('Очень нихуёвая приебенция') ?>"><input type="checkbox" value="1" name="head" id="head_on_msg" /> <?= L('Декоративная хренька над сообщением') ?></label><br />
+		<label title="<?= L('Очень нихуёвая приебенция') ?>">
+			<input type="checkbox" value="1" name="head" id="head_on_msg" /> <?= L('Декоративная хренька над сообщением') ?>
+		</label><br />
 		
 		<?= L('Звук при сообщении') ?>:<br />
 		<input type="text" value="" name="music" id="msg_music" style="width: 97%" />
@@ -102,9 +298,9 @@
 		
 		<div style="height: 150px; overflow-y: scroll" id="music_list">
 		<?php foreach ($sounds as $sound): ?>
-			<div class="music">
-				<img src="static/images/play.png" alt="" play="<?= htmlspecialchars(get_music_path($sound)) ?>" />
-				<span sound-name="<?= htmlspecialchars($sound) ?>"><?= htmlspecialchars(normalize_music_name($sound)) ?></span>
+			<div class="music" data-sound="<?= htmlspecialchars($sound) ?>">
+				<img src="static/images/play.png" alt="" data-sound="<?= htmlspecialchars(get_music_path($sound)) ?>" class="sound_play" />
+				<?= htmlspecialchars(normalize_music_name($sound)) ?>
 			</div>
 		<?php endforeach; ?>
 		</div>
@@ -113,272 +309,20 @@
 		<input type="submit" value="<?= L('Отмена') ?>" class="modal_window_close" w="edit_dialog" />
 	</div>
 </div>
+<?php endif; ?>
 
-<script>
-var file_id = <?= json_encode($file_id) ?>;
-var file_name = <?= json_encode($file_name) ?>;
-</script>
 <script type="text/javascript">
-$('#save_lang').click(function(e) {
-	e.preventDefault();
-	
-	var post = {};
-	
-	post.id = $('#message_id').val();
-	post.message = $('#message').val();
-	post.sub_message = $('#sub_message').val();
-	post.color = $('#color_block').text().substr(1);
-	post.opacity = $('#transparent_value').val();
-	post.position = $('.screen_position td.active').attr("p");
-	post.opacity = $('#transparent')[0].sliderGetValue();
-	post.message_timeout = $('#message_timeout_slider')[0].sliderGetValue();
-	post.message_show_speed = $('#message_show_speed').val();
-	post.music = $('#msg_music').val();
-	post.head_on_message = $('#head_on_msg').prop("checked") ? 1 : 0;
-	
-	var tr = $('tr[N=' + post.id + ']');
-	tr.attr("S", post.position + "," + post.message_timeout + "," + post.message_show_speed + "," + post.head_on_message + "," + post.opacity + "," + post.music);
-	tr.css("color", '#' + post.color);
-	tr.css("opacity", post.opacity / 255, 4);
-	
-	tr.find('td[m]').text(post.message);
-	tr.find('td[s]').text(post.sub_message);
-	
-	$('#sysmsg_edit_error').hide();
-	$.post(
-		"?action=update_file&file_id=" + file_id, post, 
-		function (data) {
-			if (data.errors.length > 0)
-				$('#sysmsg_edit_error').html(data.errors.join('<br />')).show();
-			$('#edit_dialog').toggle();
-		}, 
-		"json"
-	).fail(function (e) {
-		$('#sysmsg_edit_error').html("<?= L('Ошибка подключения к серверу. ') ?>").show();
-	});
-});
-
-$(".l2sysmsgs tr[S]").click(function(e) {
-	e.preventDefault();
-	
-	$('#color_selector').css("height", 0);
-	$('#sysmsg_edit_error').hide();
-	$('#message_id').val(parseInt($(this).find("td").text()));
-	
-	$('#message').val($(this).find('td[m]').text());
-	$('#sub_message').val($(this).find('td[s]').text());
-	
-	$('#edit_dialog').show();
-	$('#edit_dialog > div').css("marginTop", $('#edit_dialog').height() / 2 - $('#edit_dialog > div').height() / 2);
-	
-	// color
-	var color = $(this).css("color");
-	var r = 0, g = 0, b = 0, hex_color = '000';
-	var m;
-	if ((m = color.match(/\((\d+), (\d+), (\d+)\)/i))) {
-		r = m[1]; g = m[2]; b = m[3];
-		hex_color = to_hex((r << 16) | (g << 8) | b, 6);
-	}
-	set_color(hex_color);
-	
-	var parts = this.getAttribute('S').split(',', 6);
-	
-	// position
-	$('.screen_position td[p="' + parts[0] + '"]').click();
-	
-	// message timeout
-	set_message_timeout(parts[1]);
-	
-	// speed
-	$('#message_show_speed option').prop("selected", false);
-	var opt = $('#message_show_speed option[value="' + parts[2] +'"]');
-	if (opt.length > 0) {
-		opt.prop("selected", true);
-	} else {
-		$('#message_show_speed').append('<option value="' + parts[2] + '">' + parts[3] + '</option>');
-		$('#message_show_speed option[value="' + parts[2] +'"]').prop("selected", true);
-	}
-	
-	// head
-	$('#head_on_msg').prop("checked", parts[3] != 0);
-	
-	// opacity
-	set_opacity(parts[4]);
-	
-	// music
-	$('#msg_music').val(parts[5]);
-	
-	$('#edit_dialog').show();
-});
-
-$('.modal_window_close').click(function() {
-	$('#' + this.getAttribute('w')).toggle();
-});
-
-$('#color_block').bind('click', function() {
-	var color_selector = $('#color_selector');
-	color_selector.stop().animate({height: color_selector.height() != 0 ? 0 : 230}, 500);
-});
-$('#transparent_value').keyup(function () {
-	if (this.value > 255)
-		this.value = 255;
-	if (this.value < 0)
-		this.value = 0;
-	set_opacity(this.value);
-});
-$('#message_timeout').keyup(function () {
-	set_message_timeout(this.value);
-});
-Slider.init($('#transparent'), {
-	max: 255, 
-	min: 0, 
-	onmove: function (value) {
-		update_opacity(value);
+L2SysMsgEditor.init({
+	id: <?= json_encode($file_id) ?>, 
+	name: <?= json_encode($file_name) ?>, 
+	meta: <?= json_encode($metadata) ?>, 
+	search: <?= json_encode($search) ?>, 
+	isDiff: <?= json_encode($is_diff) ?>, 
+	donor: {
+<?php if ($is_diff): ?>
+		id: <?= json_encode($donor_id) ?>, 
+		name: <?= json_encode($donor_name) ?>
+<?php endif; ?>
 	}
 });
-Slider.init($('#message_timeout_slider'), {
-	max: 60, 
-	min: 0, 
-	onmove: function (value) {
-		update_message_timeout(value);
-	}
-});
-$('#msg_music_search').keyup(function () {
-	var list = $('#music_list');
-	var search = this.value.toLowerCase();
-	if (search.length == 0) return false; console.log(search.length, search);
-	list.find('span[sound-name]').each(function(k, v) {
-		if (v.textContent.toLowerCase().indexOf(search) > -1)
-			list.prepend($(v).parent().detach());
-	});
-	list.animate({scrollTop: 0}, 500);
-});
-$('#music_list span[sound-name]').click(function () {
-	$('#msg_music').val(this.getAttribute('sound-name'));
-});
-var players = [];
-$('img[play]').click(function () {
-	var id = this.getAttribute('play').replace(/\//g, ".");
-	var self = this;
-	
-	if (self.is_played) {
-		soundManager.stop(id);
-		return;
-	}
-	
-	self.is_played = true;
-	self.src = self.src.replace(/play/, 'stop');
-	if (!document.getElementById(id)) {
-		var p = soundManager.createSound({
-			id: id, 
-			url: 'files/' + this.getAttribute('play'), 
-			autoLoad: false, 
-			onfinish: function () {
-				self.src = self.src.replace(/stop/, 'play');
-				self.is_played = false;
-			}, 
-			onstop: function () {
-				self.src = self.src.replace(/stop/, 'play');
-				self.is_played = false;
-			}
-		});
-		players.push(p);
-	}
-	for (var i = 0; i < players.length; ++i)
-		players[i].stop();
-	soundManager.play(id, {volume: 100});
-});
-$('#color_selector').ColorPicker({
-	flat: true, 
-	onChange: function (hsb, hex, rgb) {
-		set_color(hex);
-	}
-});
-$('.screen_position td').click(function (e) {
-	$('.screen_position td').removeClass('active');
-	$(this).toggleClass('active');
-});
-$('#up_to_page').click(function (e) {
-	$('body').animate({scrollTop: 0}, 300);
-});
-$('#do_search_id').click(function (e) {
-	$('body').animate({
-		scrollTop: $('tr[N="' + $('#search_id').val() + '"]').show().offset().top
-	}, 500);
-});
-$('#do_search_text').click(function(e) {
-	do_search($('#search').val());
-});
-$('#download').click(function (e) {
-	document.location.href = this.getAttribute('href');
-	return false;
-})
-
-var is_fixed = false;
-var nav = $('#up_to_page');
-$(window).scroll(function () {
-	if ($(this).scrollTop() > 0) {
-		if (!is_fixed) {
-			nav.show();
-			is_fixed = true;
-		}
-	} else {
-		if (is_fixed) {
-			nav.hide();
-			is_fixed = false;
-		}
-	}
-});
-
-soundManager.setup({
-	url: 'static/js/soundmanager/swf/', 
-	onready: function() { },
-	ontimeout: function() { }
-
-});
-
-function set_color(hex) {
-	$('#color_block').css('color', '#' + hex).html('#' + hex.toUpperCase());
-	$('#message, #sub_message').css('color', '#' + hex);
-	$('#color_selector').ColorPickerSetColor(hex);
-}
-function set_opacity(val) {
-	$('#transparent')[0].sliderSetValue(val);
-	update_opacity(val);
-}
-function set_message_timeout(val) {
-	$('#message_timeout_slider')[0].sliderSetValue(val);
-	update_message_timeout(val);
-}
-function update_opacity(val) {
-	$('#color_block').css('opacity', val / 255);
-	$('#message').css('opacity', val / 255);
-	$('#transparent_value').val(val);
-}
-function update_message_timeout(val) {
-	$('#message_timeout').val(val);
-}
-function to_hex(i, n) {
-	var s = '';
-	for (var j = 0; j < n; ++j)
-		s += '0';
-	s += i.toString(16);
-	return s.substr(-n);
-}
-
-function do_search(value) {
-	if (value.length == 0) {
-		$('tr[N]').show();
-		return;
-	}
-	
-	var search = value.toLowerCase();
-	$('tr[N]').each(function(k, v) {
-		var e = v.getElementsByTagName('td');
-		if ((e[1].textContent + e[2].textContent).toLowerCase().indexOf(search) > -1) {
-			v.style.display = "";
-		} else
-			v.style.display = "none";
-	});
-}
 </script>

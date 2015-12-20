@@ -1,16 +1,26 @@
 #!/bin/bash
 cd $(dirname $0)
 
-rev0=($(md5sum www/static/css/main.css))
-rev1=($(md5sum www/static/js/functions.js))
-revision="$rev0-$rev1"
-revision=($(echo "$revision" | md5sum))
+mkdir -p "$1"
 
-rsync -rpCv --checksum --delete "www/" "$1/" --exclude 'tmp/*' --exclude 'files/*'
-rsync -rpCv --checksum  "www/files/" "$1/files/"
-tar -C "$1/files" -xf "$1/files/files.tar.gz"
+revision=($(find www/static/js www/static/css -iname '*.js' -o -iname '*.css' -exec cat {} \; | md5sum))
+
+rsync -rpCv --checksum --delete "./" "$1/" --exclude 'www/tmp/*' --exclude 'www/files/*'
+rsync -rpCv --checksum  "www/files/" "$1/www/files/"
+tar -C "$1/www/files" -xf "$1/www/files/files.tar.gz"
 
 # костылище :D
-sed -i "s/const STATIC_REVISOIN = [^;]*;/const STATIC_REVISOIN = '$revision';/g" "$1/index.php"
+tmp_dir="H.'www/tmp/';"
+tmp_dir=${tmp_dir//\//\\\/}
+sed -i "s/const STATIC_REVISOIN = [^;]*;/const STATIC_REVISOIN = '$revision';/g" "$1/www/index.php"
+sed -i "s/const L2_TMP_DIR = [^;]*;/const L2_TMP_DIR = $tmp_dir/g" "$1/www/index.php"
 
-chmod 0777 "$1/tmp"
+echo "TPL..."
+find $1/www/templates -iname '*.xhtml.php' -exec perl -i -p -e 's/\s+/ /mig' {} \;
+echo "JS..."
+find $1/www/static -iname '*.js' -exec uglifyjs {} -o {} -c -m \;
+echo "CSS..."
+find $1/www/static -iname '*.css' -exec csso -i {} -o {} \;
+
+mkdir "$1/www/tmp"
+chmod 0777 "$1/www/tmp"
