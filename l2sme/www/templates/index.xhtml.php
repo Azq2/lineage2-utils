@@ -28,8 +28,11 @@
 						<div class="hr"></div>
 						<input type="submit" value="<?= L('Редактировать') ?>" />
 						<br /><br /><br />
-						<a href="http://zhumarin.ru"><?= L('Контакты для связи') ?></a><br />
-						<?= L('Если что-то не работает или у Вас есть идеи по улучшению - пишите мне по этим контактам. ') ?>
+						<div style="font-size: 1.1em;">
+							<a href="http://zhumarin.ru"><?= L('Контакты для связи') ?></a><br />
+							<?= L('Если что-то не работает или у Вас есть идеи по улучшению - пишите мне по этим контактам. ') ?><br />
+							<small>// <?= L('Так же доступна') ?> <a href="/sme_old/?from_new=1"><?= L('старая версия') ?></a></small>
+						</div>
 					</form>
 				</div>
 				<div class="tab-content padd<?= $tab == 'diff' ? ' active' : '' ?>" data-id="diff">

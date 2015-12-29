@@ -219,19 +219,19 @@ input[type="submit"]:hover, select:hover, button.btn:hover, button.btn.clicked {
 	display: block
 }
 .l2sysmsgs-select td:nth-child(1) {
-    background-image: url(/static/images/check.png);
+    background-image: url(../images/check.png);
     background-repeat: no-repeat;
 	background-position: 3px 5px;
     padding-left: 20px;
 }
 
 .l2sysmsgs-select .disabled td:nth-child(1) {
-	background-image: url(/static/images/remove.png);
+	background-image: url(../images/remove.png);
 }
 
 .l2sysmsgs-select .checked tr:nth-child(1) > td:nth-child(1), 
 .l2sysmsgs-select tr.checked > td:nth-child(1) {
-    background-image: url(/static/images/checked.png);
+    background-image: url(../images/checked.png);
 }
 .l2sysmsgs tr.checked, .l2sysmsgs .blk.checked tr {
 	background-color: #3A342C !important;
@@ -256,7 +256,7 @@ input[type="file"] {
 }
 
 .l2sysmsgs .sm > td {
-	background-image: url(/static/images/screen.png);
+	background-image: url(../images/screen.png);
     background-repeat: no-repeat;
     background-position: 4px 5px;
     padding-left: 24px;
