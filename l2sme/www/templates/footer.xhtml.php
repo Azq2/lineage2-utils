@@ -1,14 +1,15 @@
 <?php if ($noindex): ?>
 		<center>
 			<a href="http://zhumarin.ru"><?= date("Y") ?> &copy; Kirill Zhumarin</a><br />
-			<?php if ($noindex): ?>
-				<script type="text/javascript" src="http://mobtop.ru/c/91077.js"></script>
-				<noscript><a href="http://mobtop.ru/in/91077"><img src="http://mobtop.ru/91077.gif" alt="MobTop.Ru - рейтинг мобильных сайтов"/></a></noscript>
-			<?php else: ?>
-				<script type="text/javascript" src="http://mobtop.ru/c/91076.js"></script>
-				<noscript><a href="http://mobtop.ru/in/91076"><img src="http://mobtop.ru/91076.gif" alt="MobTop.Ru - рейтинг мобильных сайтов"/></a></noscript>
-			<?php endif; ?>
+			<script type="text/javascript" src="http://mobtop.ru/c/91077.js"></script>
+			<noscript><a href="http://mobtop.ru/in/91077"><img src="http://mobtop.ru/91077.gif" alt="MobTop.Ru - рейтинг мобильных сайтов"/></a></noscript>
 		</center>
+<?php else: ?>
+	<center style="z-index:999999999999999;bottom:0;left:0;right:0;position:absolute;">
+		<a href="http://zhumarin.ru"><?= date("Y") ?> &copy; Kirill Zhumarin</a><br />
+		<script type="text/javascript" src="http://mobtop.ru/c/91076.js"></script>
+		<noscript><a href="http://mobtop.ru/in/91076"><img src="http://mobtop.ru/91076.gif" alt="MobTop.Ru - рейтинг мобильных сайтов"/></a></noscript>
+	</center>
 <?php endif; ?>
 
 <!-- Yandex.Metrika counter -->
