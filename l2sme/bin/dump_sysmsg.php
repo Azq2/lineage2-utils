@@ -4,7 +4,7 @@
 	
 	use L2File\SystemMsg;
 	
-	$b = L2File::read("/home/azq2/systemmsg-e.dat");
+	$b = L2File::read($argv[1]);
 	$total = $b->readUInt();
 	
 	echo "total: ".$total."\n";

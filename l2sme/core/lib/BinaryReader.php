@@ -125,6 +125,7 @@
 				
 				$data = substr($this->data, $this->offset + 1, $a);
 				$this->offset += 1 + $a;
+				
 				to_encoding($data, "UTF-8");
 				return $data;
 			} else if ($a >= 0x40) {
@@ -156,8 +157,7 @@
 	}
 	
 	function to_encoding(&$str, $to_enc) {
-		if (!($enc = mb_detect_encoding($str)))
-			$enc = BinaryReader::detectEncoding($str);
+		$enc = BinaryReader::detectEncoding($str);
 		if ($enc)
 			$str = @iconv($enc, $to_enc, $str);
 	}
