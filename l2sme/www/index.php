@@ -141,8 +141,12 @@
 										$m[SystemMsg::DELAY_SPEED] = $m2[SystemMsg::DELAY_SPEED];
 									if ($merge_ops->copy_duration)
 										$m[SystemMsg::DURATION] = $m2[SystemMsg::DURATION];
-									if ($merge_ops->copy_sound)
-										$m[SystemMsg::SOUND] = $m2[SystemMsg::SOUND];
+									
+									if ($systemmsgs['rev'] == 0) {
+										if ($merge_ops->copy_sound)
+											$m[SystemMsg::SOUND] = $m2[SystemMsg::SOUND];
+									}
+									
 									if ($merge_ops->copy_color) {
 										$m[SystemMsg::R] = $m2[SystemMsg::R];
 										$m[SystemMsg::G] = $m2[SystemMsg::G];
@@ -178,8 +182,12 @@
 									$m[SystemMsg::MESSAGE] = str_add_null("");
 								if ($bulk_ops->delete_scr_msg)
 									$m[SystemMsg::POSITION] = 0;
-								if ($bulk_ops->delete_sound)
-									$m[SystemMsg::SOUND] = str_add_null("");
+								
+								if ($systemmsgs['rev'] == 0) {
+									if ($bulk_ops->delete_sound)
+										$m[SystemMsg::SOUND] = str_add_null("");
+								}
+								
 								if ($bulk_ops->change_color) {
 									$m[SystemMsg::R] = $r;
 									$m[SystemMsg::G] = $g;
@@ -199,7 +207,10 @@
 							$m[SystemMsg::DURATION] = $message_timeout;
 							$m[SystemMsg::DELAY_SPEED] = $message_show_speed;
 							$m[SystemMsg::HEAD] = $head_on_message;
-							$m[SystemMsg::SOUND] = str_add_null($music);
+							
+							if ($systemmsgs['rev'] == 0)
+								$m[SystemMsg::SOUND] = str_add_null($music);
+							
 							$m[SystemMsg::MESSAGE] = str_add_null($message);
 							$m[SystemMsg::SUB_MSG] = str_add_null($sub_message);
 							$m[SystemMsg::R] = $r;
@@ -251,8 +262,12 @@
 				$b2 = L2File::read($donor_path);
 			try {
 				SystemMsg::parse($b, $systemmsgs);
-				if ($is_diff)
+				if ($is_diff) {
 					SystemMsg::parse($b2, $systemmsgs2);
+					
+					if ($systemmsgs2['rev'] != $systemmsgs['rev'])
+						die("BUG! Please, contact me to azq2@ya.ru");
+				}
 			} catch (Exception $e) {
 				write_log("exception (edit_file): ".get_class($e).": ".$e->getMessage());
 				die(L('Внезапная ошибка разбора файла ({0}): {1}', get_class($e), $e->getMessage()));
@@ -341,7 +356,8 @@
 					"donor_name" => $donor_name, 
 					"total" => max($systemmsgs['total'], $systemmsgs2['total']), 
 					"visible_cnt" => $visible_cnt, 
-					"is_diff" => true
+					"is_diff" => true, 
+					'rev' => $systemmsgs['rev']
 				));
 				end_html_page();
 			} else {
@@ -353,7 +369,8 @@
 					"sounds" => &$sounds, 
 					"file_id" => $file_md5, 
 					"file_name" => $file_name, 
-					"is_diff" => false
+					"is_diff" => false, 
+					'rev' => $systemmsgs['rev']
 				));
 				end_html_page();
 			}
